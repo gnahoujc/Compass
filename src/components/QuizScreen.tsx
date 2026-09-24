@@ -9,16 +9,15 @@ interface Props {
   settings: QuizSettings;
   onFinish: (records: AnswerRecord[], timeMs: number) => void;
   onQuit: () => void;
-  /** How long answer feedback stays up before auto-advancing. */
-  feedbackMs?: number;
 }
 
-export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs = 1800 }: Props) {
+export function QuizScreen({ questions, settings, onFinish, onQuit }: Props) {
   const [index, setIndex] = useState(0);
   const [records, setRecords] = useState<AnswerRecord[]>([]);
   const [current, setCurrent] = useState<AnswerRecord | null>(null);
   const questionStartedAt = useRef(Date.now());
   const elapsedMs = useRef(0);
+  const nextButton = useRef<HTMLButtonElement>(null);
 
   const question = questions[index];
   const answered = current !== null;
@@ -48,14 +47,14 @@ export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs =
 
   const timer = useTimer(settings.timerSeconds, !answered, index, () => answer(null));
 
-  // Auto-advance after showing feedback.
+  // The quiz waits on the feedback until the player moves on. Focusing "Next"
+  // lets keyboard users continue with Enter/Space; the answered choice button
+  // is disabled by now, so focus would otherwise be lost.
   useEffect(() => {
-    if (!current) return;
-    const id = setTimeout(advance, current.correct ? feedbackMs : feedbackMs * 1.5);
-    return () => clearTimeout(id);
-  }, [current, advance, feedbackMs]);
+    if (answered) nextButton.current?.focus();
+  }, [answered]);
 
-  // Keyboard: 1–4 to answer, Enter/Space to skip the feedback pause.
+  // Keyboard: 1–4 to answer, Enter/Space to go to the next question.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.altKey || e.ctrlKey || e.metaKey) return;
@@ -63,6 +62,9 @@ export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs =
       if (!answered && n >= 1 && n <= question.choices.length) {
         answer(question.choices[n - 1]);
       } else if (answered && (e.key === 'Enter' || e.key === ' ')) {
+        // Let a focused button handle the key itself: "Next" advances anyway,
+        // and "Quit" should quit rather than advance.
+        if (e.target instanceof HTMLButtonElement) return;
         e.preventDefault();
         advance();
       }
@@ -143,7 +145,7 @@ export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs =
                 {question.country.capital} is the capital of {question.country.name}.
               </p>
             </div>
-            <button type="button" className="secondary" onClick={advance}>
+            <button ref={nextButton} type="button" className="secondary" onClick={advance}>
               {index + 1 >= questions.length ? 'See results' : 'Next'}
             </button>
           </>

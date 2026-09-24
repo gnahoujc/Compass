@@ -13,7 +13,7 @@ A quiz web app that tests how well you know the capitals of the world's 195 coun
 - **Best scores** saved in your browser, per combination of settings (ranked by correct answers, then speed)
 - The country's flag is shown after each answer
 - Review list of missed questions at the end
-- Keyboard shortcuts: `1`–`4` to answer, `Enter` to skip to the next question
+- Keyboard shortcuts: `1`–`4` to answer, `Enter` for the next question (the quiz waits for you after each answer)
 - Light and dark themes, works on phones
 
 ## Getting started
