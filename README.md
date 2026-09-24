@@ -2,6 +2,8 @@
 
 A quiz web app that tests how well you know the capitals of the world's 195 countries.
 
+**Play it:** https://gnahoujc.github.io/Compass/
+
 ## Features
 
 - **Two modes**: Country → Capital, or the reverse (Capital → Country)
@@ -24,6 +26,11 @@ npm run dev       # start the dev server at http://localhost:5173
 npm test          # run the tests
 npm run build     # type-check and build to dist/
 ```
+
+## Deployment
+
+Every push to `main` runs the tests, builds the app and publishes it to GitHub Pages
+(`.github/workflows/deploy.yml`). It can also be run by hand from the repo's Actions tab.
 
 ## Project layout
 
