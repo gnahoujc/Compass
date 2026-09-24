@@ -9,6 +9,7 @@ A quiz web app that tests how well you know the capitals of the world's 195 coun
 - **Continent filter**: quiz yourself on any combination of continents
 - **Timer**: off, or 10 / 15 / 30 seconds per question (running out counts as wrong)
 - **Best scores** saved in your browser, per combination of settings (ranked by correct answers, then speed)
+- The country's flag is shown after each answer
 - Review list of missed questions at the end
 - Keyboard shortcuts: `1`–`4` to answer, `Enter` to skip to the next question
 - Light and dark themes, works on phones

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTimer } from '../hooks/useTimer';
 import type { AnswerRecord, Question, QuizSettings } from '../types';
 import { ChoiceButton, type ChoiceState } from './ChoiceButton';
+import { Flag } from './Flag';
 
 interface Props {
   questions: Question[];
@@ -12,7 +13,7 @@ interface Props {
   feedbackMs?: number;
 }
 
-export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs = 1400 }: Props) {
+export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs = 1800 }: Props) {
   const [index, setIndex] = useState(0);
   const [records, setRecords] = useState<AnswerRecord[]>([]);
   const [current, setCurrent] = useState<AnswerRecord | null>(null);
@@ -126,19 +127,26 @@ export function QuizScreen({ questions, settings, onFinish, onQuit, feedbackMs =
       </div>
 
       <div className="feedback" aria-live="polite">
-        {current &&
-          (current.correct ? (
-            <p className="feedback-correct">Correct!</p>
-          ) : (
-            <p className="feedback-wrong">
-              {current.selected === null ? "Time's up! " : 'Not quite. '}
-              The answer is <strong>{question.answer}</strong>.
-            </p>
-          ))}
         {current && (
-          <button type="button" className="secondary" onClick={advance}>
-            {index + 1 >= questions.length ? 'See results' : 'Next'}
-          </button>
+          <>
+            <Flag country={question.country} />
+            <div className="feedback-text">
+              {current.correct ? (
+                <p className="feedback-correct">Correct!</p>
+              ) : (
+                <p className="feedback-wrong">
+                  {current.selected === null ? "Time's up! " : 'Not quite. '}
+                  The answer is <strong>{question.answer}</strong>.
+                </p>
+              )}
+              <p className="feedback-detail">
+                {question.country.capital} is the capital of {question.country.name}.
+              </p>
+            </div>
+            <button type="button" className="secondary" onClick={advance}>
+              {index + 1 >= questions.length ? 'See results' : 'Next'}
+            </button>
+          </>
         )}
       </div>
     </section>

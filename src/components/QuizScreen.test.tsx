@@ -4,13 +4,13 @@ import { QuizScreen } from './QuizScreen';
 
 const questions: Question[] = [
   {
-    country: { name: 'France', capital: 'Paris', continent: 'Europe' },
+    country: { name: 'France', code: 'fr', capital: 'Paris', continent: 'Europe' },
     prompt: 'What is the capital of France?',
     answer: 'Paris',
     choices: ['Madrid', 'Paris', 'Rome', 'Berlin'],
   },
   {
-    country: { name: 'Japan', capital: 'Tokyo', continent: 'Asia' },
+    country: { name: 'Japan', code: 'jp', capital: 'Tokyo', continent: 'Asia' },
     prompt: 'What is the capital of Japan?',
     answer: 'Tokyo',
     choices: ['Seoul', 'Beijing', 'Tokyo', 'Hanoi'],
@@ -33,8 +33,10 @@ describe('QuizScreen', () => {
     render(<QuizScreen questions={questions} settings={settings(0)} onFinish={onFinish} onQuit={() => {}} feedbackMs={500} />);
 
     expect(screen.getByRole('heading', { name: 'What is the capital of France?' })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: 'Flag of France' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Paris/ }));
     expect(screen.getByText('Correct!')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Flag of France' })).toHaveAttribute('src', expect.stringContaining('fr.svg'));
     expect(screen.getByText('Score 1')).toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(500));
@@ -59,6 +61,7 @@ describe('QuizScreen', () => {
 
     act(() => vi.advanceTimersByTime(10_100));
     expect(screen.getByText(/Time's up!/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Flag of France' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Paris/ })).toHaveClass('choice-correct');
   });
 });

@@ -325,15 +325,58 @@ input {
   opacity: 0.5;
 }
 .feedback {
-  min-height: 48px;
+  /* Reserve room for the flag so the card doesn't jump when feedback appears. */
+  min-height: 56px;
   margin-top: 16px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 .feedback p {
   margin: 0;
+}
+.feedback .secondary {
+  margin-left: auto;
+  flex: none;
+}
+.flag {
+  flex: none;
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 6px;
+  /* Keeps white flag edges (e.g. Japan) visible against the card. */
+  box-shadow: 0 0 0 1px var(--border);
+  animation: flag-in 0.25s ease-out;
+}
+@keyframes flag-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flag {
+    animation: none;
+  }
+}
+.feedback-text {
+  min-width: 0;
+}
+.feedback-detail {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+@media (max-width: 480px) {
+  .feedback {
+    flex-wrap: wrap;
+  }
+  .feedback-text {
+    flex: 1;
+  }
+  .feedback .secondary {
+    width: 100%;
+  }
 }
 .feedback-correct {
   color: var(--correct);

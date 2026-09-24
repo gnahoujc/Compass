@@ -11,6 +11,8 @@ export type Continent = (typeof CONTINENTS)[number];
 
 export interface Country {
   name: string;
+  /** ISO 3166-1 alpha-2 code, lowercase; used to look up the flag. */
+  code: string;
   capital: string;
   continent: Continent;
 }

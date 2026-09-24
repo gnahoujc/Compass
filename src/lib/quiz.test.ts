@@ -1,4 +1,5 @@
 import { COUNTRIES } from '../data/countries';
+import { flagUrl } from '../data/flags';
 import { CONTINENTS, type QuizSettings } from '../types';
 import { buildQuestions, CHOICE_COUNT, filterByContinents, makeChoices, shuffle, type Rng } from './quiz';
 
@@ -20,6 +21,11 @@ describe('country data', () => {
     expect(COUNTRIES).toHaveLength(195);
     expect(new Set(COUNTRIES.map((c) => c.name)).size).toBe(COUNTRIES.length);
     expect(new Set(COUNTRIES.map((c) => c.capital)).size).toBe(COUNTRIES.length);
+  });
+
+  it('has a unique code and a flag for every country', () => {
+    expect(new Set(COUNTRIES.map((c) => c.code)).size).toBe(COUNTRIES.length);
+    expect(COUNTRIES.filter((c) => !flagUrl(c.code)).map((c) => c.name)).toEqual([]);
   });
 
   it('covers every continent', () => {
