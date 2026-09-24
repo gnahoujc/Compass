@@ -39,7 +39,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <img src="/compass.svg" alt="" width={40} height={40} />
+        <img src={`${import.meta.env.BASE_URL}compass.svg`} alt="" width={40} height={40} />
         <div>
           <h1>Compass</h1>
           <p>How well do you know the world's capitals?</p>
