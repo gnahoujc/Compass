@@ -27,6 +27,10 @@ npm test          # run the tests
 npm run build     # type-check and build to dist/
 ```
 
+## Continuous integration
+
+Every pull request runs the tests and a production build (`.github/workflows/ci.yml`).
+
 ## Deployment
 
 Every push to `main` runs the tests, builds the app and publishes it to GitHub Pages
