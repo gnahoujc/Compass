@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { BestScore } from '../lib/scores';
 import type { AnswerRecord } from '../types';
 import { formatDuration } from './format';
@@ -9,6 +10,8 @@ interface Props {
   best: BestScore | null;
   onPlayAgain: () => void;
   onChangeSettings: () => void;
+  /** Extra content shown under the actions (the online scoreboard). */
+  children?: ReactNode;
 }
 
 function verdict(percent: number): string {
@@ -18,7 +21,7 @@ function verdict(percent: number): string {
   return 'Keep exploring!';
 }
 
-export function ResultsScreen({ records, timeMs, isNewBest, best, onPlayAgain, onChangeSettings }: Props) {
+export function ResultsScreen({ records, timeMs, isNewBest, best, onPlayAgain, onChangeSettings, children }: Props) {
   const correct = records.filter((r) => r.correct).length;
   const percent = records.length ? Math.round((correct / records.length) * 100) : 0;
   const missed = records.filter((r) => !r.correct);
@@ -50,6 +53,8 @@ export function ResultsScreen({ records, timeMs, isNewBest, best, onPlayAgain, o
           Change settings
         </button>
       </div>
+
+      {children}
 
       {missed.length > 0 && (
         <div className="review">

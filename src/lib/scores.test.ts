@@ -1,5 +1,5 @@
 import type { QuizSettings } from '../types';
-import { isBetter, loadBest, saveIfBest, scoreKey, type BestScore } from './scores';
+import { categoryKey, isBetter, loadBest, saveIfBest, scoreKey, type BestScore } from './scores';
 
 const settings: QuizSettings = { mode: 'capital', continents: ['Europe', 'Asia'], questionCount: 10, timerSeconds: 15 };
 const score = (correct: number, timeMs: number): BestScore => ({ correct, total: 10, timeMs, date: '2026-09-24' });
@@ -7,6 +7,12 @@ const score = (correct: number, timeMs: number): BestScore => ({ correct, total:
 beforeEach(() => localStorage.clear());
 
 describe('scoreKey', () => {
+  it('keeps the storage format used by existing saved bests', () => {
+    expect(categoryKey(settings)).toBe('capital:Asia,Europe:10:15');
+    expect(scoreKey(settings)).toBe('compass:best:capital:Asia,Europe:10:15');
+    expect(categoryKey({ ...settings, continents: [] })).toBe('capital:all:10:15');
+  });
+
   it('is independent of continent order', () => {
     expect(scoreKey(settings)).toBe(scoreKey({ ...settings, continents: ['Asia', 'Europe'] }));
   });
