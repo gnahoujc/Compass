@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { MAX_NAME_LENGTH, normalizeName } from '../lib/player';
-import { submitScore, type ScoreboardConfig } from '../lib/scoreboard';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { submitScore } from '../lib/scoreboard';
 import { Leaderboard } from './Leaderboard';
 
 interface Props {
-  config: ScoreboardConfig;
+  client: SupabaseClient;
+  currentUserId: string;
   category: string;
   label: string;
   score: { correct: number; total: number; timeMs: number };
@@ -19,7 +21,7 @@ type PostStatus = 'idle' | 'posting' | 'posted' | 'error';
  * Results-screen scoreboard. With a registered name the score is posted
  * automatically; otherwise the player can enter a name and post it.
  */
-export function ScoreboardPanel({ config, category, label, score, playerName, onPlayerNameChange }: Props) {
+export function ScoreboardPanel({ client, currentUserId, category, label, score, playerName, onPlayerNameChange }: Props) {
   const name = normalizeName(playerName);
   const [status, setStatus] = useState<PostStatus>('idle');
   /** The name the score was (or is being) posted under. */
@@ -27,7 +29,7 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
   const [draft, setDraft] = useState('');
   const [draftInvalid, setDraftInvalid] = useState(false);
   // With a name, the board loads after posting so it includes this score.
-  const board = useLeaderboard(config, category, !name);
+  const board = useLeaderboard(client, category, !name);
   // Guards against posting twice (e.g. React StrictMode re-running effects).
   const postStarted = useRef(false);
 
@@ -37,14 +39,14 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
       setPostedAs(as);
       setStatus('posting');
       try {
-        await submitScore(config, { ...score, playerName: as, category });
+        await submitScore(client, { ...score, playerName: as, category });
         setStatus('posted');
       } catch {
         setStatus('error');
       }
       await board.reload();
     },
-    [config, score, category, board],
+    [client, score, category, board],
   );
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
         </form>
       )}
 
-      <Leaderboard rows={board.rows} error={board.error} highlightName={postedAs ?? name} onRetry={() => void board.reload()} />
+      <Leaderboard rows={board.rows} error={board.error} currentUserId={currentUserId} onRetry={() => void board.reload()} />
     </section>
   );
 }
