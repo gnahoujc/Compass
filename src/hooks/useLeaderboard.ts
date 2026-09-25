@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchLeaderboard, type LeaderboardRow, type ScoreboardConfig } from '../lib/scoreboard';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { fetchLeaderboard, type LeaderboardRow } from '../lib/scoreboard';
 
 /** Loads the leaderboard for a category; `reload` refetches (e.g. after posting a score). */
-export function useLeaderboard(config: ScoreboardConfig, category: string, autoLoad = true) {
+export function useLeaderboard(client: SupabaseClient, category: string, autoLoad = true) {
   const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
   const [error, setError] = useState(false);
 
   const reload = useCallback(async () => {
     setError(false);
     try {
-      setRows(await fetchLeaderboard(config, category));
+      setRows(await fetchLeaderboard(client, category));
     } catch {
       setError(true);
     }
-  }, [config, category]);
+  }, [client, category]);
 
   useEffect(() => {
     if (autoLoad) void reload();
