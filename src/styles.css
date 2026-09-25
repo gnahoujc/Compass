@@ -452,3 +452,97 @@ input {
   color: var(--muted);
   font-size: 0.9rem;
 }
+
+/* Player name and scoreboard */
+.text-input,
+.name-form input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+.text-input::placeholder,
+.name-form input::placeholder {
+  color: var(--muted);
+}
+.setup-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.scoreboard {
+  text-align: left;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 12px;
+}
+.scoreboard h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+.scoreboard-screen h2 {
+  margin: 0;
+}
+.post-status:not(:empty) {
+  margin: 8px 0;
+}
+.name-form {
+  margin: 12px 0;
+}
+.name-form label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+.name-form > div {
+  display: flex;
+  gap: 8px;
+}
+.name-form input {
+  flex: 1;
+  min-width: 0;
+}
+.leaderboard {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.leaderboard li {
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.leaderboard li:nth-child(odd) {
+  background: var(--surface-2);
+}
+.leaderboard li.me {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.leaderboard .rank {
+  color: var(--muted);
+  text-align: right;
+}
+.leaderboard li.me .rank {
+  color: inherit;
+}
+.leaderboard .player {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.leaderboard .lb-time {
+  color: var(--muted);
+  min-width: 4.5em;
+  text-align: right;
+}
+.leaderboard li.me .lb-time {
+  color: inherit;
+}

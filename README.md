@@ -13,6 +13,7 @@ A quiz web app that tests how well you know the capitals of the world's 195 coun
 - **Best scores** saved in your browser, per combination of settings (ranked by correct answers, then speed)
 - The country's flag is shown after each answer
 - Review list of missed questions at the end
+- **Online scoreboard**: register a name and compete for the top 10 on each combination of settings
 - Keyboard shortcuts: `1`–`4` to answer, `Enter` for the next question (the quiz waits for you after each answer)
 - Light and dark themes, works on phones
 
@@ -26,6 +27,18 @@ npm run dev       # start the dev server at http://localhost:5173
 npm test          # run the tests
 npm run build     # type-check and build to dist/
 ```
+
+## Online scoreboard
+
+Scores are stored in [Supabase](https://supabase.com) (free plan). To set it up for your own copy:
+
+1. Create a Supabase project, open **SQL Editor**, and run [`supabase/schema.sql`](supabase/schema.sql).
+2. From **Project Settings → API**, copy the project URL and the publishable (or anon) key.
+3. Local development: copy `.env.example` to `.env.local` and fill in both values.
+4. Deployed site: add them as repository **variables** (not secrets) named `SUPABASE_URL` and `SUPABASE_KEY`.
+
+The key is public by design; the database rules only allow reading scores and adding
+new ones. Without these settings the app works as before, with no scoreboard.
 
 ## Continuous integration
 

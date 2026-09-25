@@ -1,4 +1,5 @@
 import type { QuizSettings } from '../types';
+import { safeStorage } from './storage';
 
 export interface BestScore {
   correct: number;
@@ -10,10 +11,18 @@ export interface BestScore {
 
 const PREFIX = 'compass:best';
 
-/** Scores are only comparable between quizzes with identical settings. */
-export function scoreKey(settings: QuizSettings): string {
+/**
+ * Scores are only comparable between quizzes with identical settings. This key
+ * identifies those settings, e.g. "capital:all:10:15"; the online scoreboard
+ * uses it too.
+ */
+export function categoryKey(settings: QuizSettings): string {
   const continents = settings.continents.length ? [...settings.continents].sort().join(',') : 'all';
-  return `${PREFIX}:${settings.mode}:${continents}:${settings.questionCount}:${settings.timerSeconds}`;
+  return `${settings.mode}:${continents}:${settings.questionCount}:${settings.timerSeconds}`;
+}
+
+export function scoreKey(settings: QuizSettings): string {
+  return `${PREFIX}:${categoryKey(settings)}`;
 }
 
 export function isBetter(candidate: BestScore, current: BestScore | null): boolean {
@@ -46,12 +55,4 @@ export function saveIfBest(
     // Storage full or blocked — still report the new best for this session.
   }
   return true;
-}
-
-function safeStorage(): Storage | undefined {
-  try {
-    return window.localStorage;
-  } catch {
-    return undefined;
-  }
 }
