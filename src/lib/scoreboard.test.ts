@@ -5,7 +5,7 @@ const ok = (body: unknown = null) => new Response(body === null ? null : JSON.st
 
 describe('scoreboardConfig', () => {
   it('is off without a URL or key', () => {
-    expect(scoreboardConfig(undefined, 'k')).toBeNull();
+    expect(scoreboardConfig('', 'k')).toBeNull();
     expect(scoreboardConfig('https://abc.supabase.co', '')).toBeNull();
   });
 
