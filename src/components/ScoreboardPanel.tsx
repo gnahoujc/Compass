@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { useLeaderboard } from '../hooks/useLeaderboard';
-import { MAX_NAME_LENGTH, normalizeName } from '../lib/player';
+import { MAX_NAME_LENGTH, nameError, normalizeName } from '../lib/player';
 import { submitScore, type ScoreboardConfig } from '../lib/scoreboard';
 import { Leaderboard } from './Leaderboard';
 
@@ -25,7 +25,7 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
   /** The name the score was (or is being) posted under. */
   const [postedAs, setPostedAs] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
-  const [draftInvalid, setDraftInvalid] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
   // With a name, the board loads after posting so it includes this score.
   const board = useLeaderboard(config, category, !name);
   // Guards against posting twice (e.g. React StrictMode re-running effects).
@@ -55,7 +55,7 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
     e.preventDefault();
     const n = normalizeName(draft);
     if (!n) {
-      setDraftInvalid(true);
+      setDraftError(nameError(draft));
       return;
     }
     onPlayerNameChange(n);
@@ -94,17 +94,22 @@ export function ScoreboardPanel({ config, category, label, score, playerName, on
               maxLength={MAX_NAME_LENGTH}
               autoComplete="nickname"
               placeholder="Your name"
-              aria-invalid={draftInvalid}
+              aria-invalid={draftError !== null}
+              aria-describedby={draftError ? 'post-name-error' : undefined}
               onChange={(e) => {
                 setDraft(e.target.value);
-                setDraftInvalid(false);
+                setDraftError(null);
               }}
             />
             <button type="submit" className="primary">
               Post score
             </button>
           </div>
-          {draftInvalid && <p className="hint error">Enter a name (up to {MAX_NAME_LENGTH} characters).</p>}
+          {draftError && (
+            <p id="post-name-error" className="hint error">
+              {draftError}
+            </p>
+          )}
         </form>
       )}
 

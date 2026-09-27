@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { COUNTRIES } from '../data/countries';
 import { filterByContinents } from '../lib/quiz';
-import { MAX_NAME_LENGTH } from '../lib/player';
+import { MAX_NAME_LENGTH, nameError } from '../lib/player';
 import { loadBest } from '../lib/scores';
 import { CONTINENTS, type Continent, type QuizMode, type QuizSettings } from '../types';
 import { formatDuration } from './format';
@@ -48,6 +48,8 @@ export function SetupScreen({ initial, onStart, playerName, onPlayerNameChange, 
         : CONTINENTS.filter((c) => c === continent || prev.includes(c)),
     );
 
+  // The name is optional, so only a non-blank one is checked.
+  const playerNameError = playerName.trim() ? nameError(playerName) : null;
   const canStart = selected.length > 0;
   const settings = resolveSettings(mode, selected, count, timerSeconds);
   const best = canStart ? loadBest(settings) : null;
@@ -72,8 +74,15 @@ export function SetupScreen({ initial, onStart, playerName, onPlayerNameChange, 
             maxLength={MAX_NAME_LENGTH}
             autoComplete="nickname"
             placeholder="Optional: shown on the scoreboard"
+            aria-invalid={playerNameError !== null}
+            aria-describedby={playerNameError ? 'player-name-error' : undefined}
             onChange={(e) => onPlayerNameChange(e.target.value)}
           />
+          {playerNameError && (
+            <p id="player-name-error" className="hint error">
+              {playerNameError} Scores won't be posted until it's fixed.
+            </p>
+          )}
         </fieldset>
       )}
 

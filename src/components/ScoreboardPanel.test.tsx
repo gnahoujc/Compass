@@ -64,6 +64,13 @@ describe('ScoreboardPanel', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Post score' }));
     expect(screen.getByText(/Enter a name/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Add your name/)).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText(/Add your name/)).toHaveAccessibleDescription('Enter a name.');
+    expect(posts).toEqual([]);
+
+    fireEvent.change(screen.getByLabelText(/Add your name/), { target: { value: 'bad\u0007name' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Post score' }));
+    expect(screen.getByText(/control/)).toBeInTheDocument();
     expect(posts).toEqual([]);
 
     fireEvent.change(screen.getByLabelText(/Add your name/), { target: { value: '  Linus  ' } });
